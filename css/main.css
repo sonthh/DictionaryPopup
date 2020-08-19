@@ -46,6 +46,10 @@ body {
   background-color: #555;
 }
 
+.tabcontent {
+  display: none;
+}
+
 /* scrollbar */
 
 ::-webkit-scrollbar-track {

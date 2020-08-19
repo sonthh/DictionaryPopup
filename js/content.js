@@ -2,19 +2,28 @@
 const doubleClick = () => {
   const selectionText = window.getSelection().toString();
 
+  console.log(selectionText);
+
   if (!selectionText || selectionText.trim() === '') {
     return;
   }
 
-  const normalizeURI = (uriString) => {
-    return encodeURI(uriString).replace(/%5B/g, '[').replace(/%5D/g, ']');
+  const normalizeURI = uriString => {
+    return encodeURI(uriString)
+      .replace(/%5B/g, '[')
+      .replace(/%5D/g, ']')
+      .replace(/[`~!@#$%^&*()_|+\-=?;:'",.<>\{\}\[\]\\\/]/gi, '');
   };
 
   const normalizedSelectionText = normalizeURI(selectionText).toLowerCase().trim();
 
-  const url = `https://www.ldoceonline.com/dictionary/${normalizedSelectionText}`;
+  chrome.storage.sync.get([storageKeys.type], result => {
+    const type = result[storageKeys.type] || 'longman';
 
-  window.location.href = url;
+    const url = `${dictionaryUrls[type]}${normalizedSelectionText}`;
+
+    window.location.href = url;
+  });
 }
 
 document.body.addEventListener('dblclick', doubleClick);
@@ -71,7 +80,6 @@ const makeBackToTopButton = () => {
   }
 
   window.onscroll = () => {
-    const SCROLLED_LENGTH = 200;
     if (document.body.scrollTop > SCROLLED_LENGTH || document.documentElement.scrollTop > SCROLLED_LENGTH) {
       $backToTop.style.display = 'block';
       return;

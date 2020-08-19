@@ -1,12 +1,8 @@
 
-const contextMenuId = 'LongmanContextMenu';
-const MAX_WORD = 15;
-const STORAGE_KEY = 'LONGMAN_HISTORY';
-
 // create longman context menu
 const contextMenu = {
   id: contextMenuId,
-  title: `Longman lookups "%s"`,
+  title: `Look up "%s"`,
   contexts: ['selection'],
 };
 
@@ -14,55 +10,116 @@ chrome.contextMenus.removeAll();
 chrome.contextMenus.create(contextMenu);
 
 // user click on longman context menu
-chrome.contextMenus.onClicked.addListener(eventData => handleOnClickContextMenu(eventData));
-
-const normalizeURI = (uriString) => {
-  return encodeURI(uriString).replace(/%5B/g, '[').replace(/%5D/g, ']');
-};
-
-const handleOnClickContextMenu = eventData => {
+chrome.contextMenus.onClicked.addListener(eventData => {
   const { menuItemId, selectionText } = eventData;
 
   if (menuItemId !== contextMenuId || !selectionText || selectionText.trim() === '') {
     return;
   }
 
-  // close all current popup windows
+  closeAllPopup();
+  createNewPopup(selectionText);
+  saveToStorage(selectionText);
+});
+
+chrome.runtime.onConnect.addListener(port => {
+  console.assert(port.name === PORT_MESSAGING);
+
+  port.onMessage.addListener(msg => {
+
+    if (msg.command === messageCommands.openPopup) {
+      if (!msg.text) return;
+      const selectionText = msg.text;
+
+      closeAllPopup();
+      createNewPopup(selectionText);
+      saveToStorage(selectionText);
+
+      port.postMessage({ response: 'OK' });
+    }
+
+    if (msg.command === messageCommands.deleteItem) {
+      if (!msg._id) return;
+
+      const { _id } = msg;
+
+      deleteById(_id);
+
+      port.postMessage({ response: 'OK' });
+    }
+  });
+});
+
+const closeAllPopup = () => {
   chrome.windows.getAll({ windowTypes: ['popup'] }, windows => {
     if (!windows || !windows.length) return;
 
     windows.forEach(({ id }) => chrome.windows.remove(id));
   });
+}
 
-  // create new popup window
-  const normalizedSelectionText = normalizeURI(selectionText).toLowerCase().trim();
+const normalizeURI = text => {
+  return encodeURI(text)
+    .replace(/%5B/g, '[')
+    .replace(/%5D/g, ']')
+    .replace(/[`~!@#$%^&*()_|+\-=?;:'",.<>\{\}\[\]\\\/]/gi, '');
+}
 
-  const url = `https://www.ldoceonline.com/dictionary/${normalizedSelectionText}`;
+const createNewPopup = text => {
+  const normalizedText = normalizeURI(text).toLowerCase().trim();
 
-  const popup = {
-    url,
-    focused: true,
-    type: 'popup', // 'normal' for debugging
-    width: Math.round(screen.availWidth * 0.30),
-    height: Math.round(screen.availHeight * 0.85),
-    top: 0,
-    left: Math.round(screen.availWidth * 0.90),
-  };
+  chrome.storage.sync.get([storageKeys.type], result => {
+    const type = result[storageKeys.type] || 'longman';
 
-  chrome.windows.create(popup);
+    const url = `${dictionaryUrls[type]}${normalizedText}`;
 
-  // save data to chrome storage
-  const word = selectionText.trim().toLowerCase();
+    const popup = {
+      url,
+      focused: true,
+      type: 'popup', // 'normal'
+      width: Math.round(screen.availWidth * 0.30),
+      height: Math.round(screen.availHeight * 0.85),
+      top: 0,
+      left: Math.round(screen.availWidth * 0.90),
+    };
 
-  chrome.storage.sync.get([STORAGE_KEY], result => {
-    const histories = result[STORAGE_KEY] || [];
+    chrome.windows.create(popup);
+  });
+}
 
-    while (histories.length >= MAX_WORD) { histories.pop(); }
+const saveToStorage = text => {
+  if (!text) {
+    return;
+  }
 
-    histories.unshift(word);
+  text = text.trim().toLowerCase();
+
+  chrome.storage.sync.get([storageKeys.history], result => {
+    const histories = result[storageKeys.history] || [];
+
+    while (histories.length >= MAX_HISTORY_WORD) { histories.pop(); }
+
+    histories.unshift({
+      _id: uniqueId(),
+      text,
+    });
 
     chrome.storage.sync.set({
-      [STORAGE_KEY]: histories,
+      [storageKeys.history]: histories,
     });
   });
-};
+}
+
+const deleteById = _id => {
+  if (!_id) return;
+
+  chrome.storage.sync.get([storageKeys.history], result => {
+    let histories = result[storageKeys.history] || [];
+
+    histories = histories.filter(each => each._id !== _id);
+
+    chrome.storage.sync.set({
+      [storageKeys.history]: histories,
+    });
+  });
+}

@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Longman dictionary popup</title>
+  <link rel="stylesheet" type="text/css" href="../css/popup.css">
+</head>
+
+<body>
+  <div class="wrapper">
+    <div class="section-select">
+      <select name="type" id="selectDictionary">
+        <option value="longman">Longman</option>
+        <option value="oxford">Oxford</option>
+        <option value="cambridge">Cambridge</option>
+        <option value="googleImages">Google Images</option>
+      </select>
+    </div>
+    <div class="contentWrapper">
+      <div class="section-input">
+        <div class="input-wrapper">
+          <input type=" text" placeholder="Look up..." name="q" id="inputSearch" size="21" maxlength="100" autofocus
+            autocomplete="off">
+          <button type="button" id="btnSearch"></button>
+        </div>
+      </div>
+      <div class="infomation">
+        <a title="Home" class="home" tabid="tableWrapper"></a>
+        <a title="Settings" class="settings" tabid="settingsWrapper"></a>
+        <a title="Help" class="about" tabid="helpWrapper"></a>
+      </div>
+      <div id="settingsWrapper" class="tabcontent">
+        <div class="setting-item">
+          <div>
+            Long press Ctrl
+          </div>
+          <label class="switch">
+            <input type="checkbox" id="settingPressCtrl" checked>
+            <span class="slider round"></span>
+          </label>
+        </div>
+      </div>
+      <div id="helpWrapper" class="tabcontent">
+        <div>
+          <p>Dictionary popup is a free chrome extension for look up vocabulary.</p>
+          <p>It supports 3 type of common dictionares: Longman, Oxford and Cambridge, biside that it too support Google
+            Images for
+            visualizing new word by images</p>
+          <p>Contact me at: tranhuuhongson@gmail.com</p>
+        </div>
+      </div>
+      <div id="tableWrapper" class="tabcontent">
+        <table id="historyTable">
+          <tbody>
+            <tr>
+              <th>Text</th>
+              <th>Action</th>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  <script type="text/javascript" src="../js/sharedScript.js"></script>
+  <script type="text/javascript" src="../js/popup.js"></script>
+</body>
+
+</html>

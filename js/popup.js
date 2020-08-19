@@ -1,126 +1,124 @@
 
-const MAX_WORD = 15;
-const STORAGE_KEY = 'LONGMAN_HISTORY';
+const port = chrome.runtime.connect({ name: PORT_MESSAGING });
 
-const normalizeURI = uriString => {
-  return encodeURI(uriString).replace(/%5B/g, '[').replace(/%5D/g, ']');
-};
+const settupSelection = () => {
 
-const showWindow = text => {
-  // close all popup window
-  chrome.windows.getAll({ windowTypes: ['popup'] }, windows => {
-    if (!windows || !windows.length) return;
-    windows.forEach(window => chrome.windows.remove(window.id));
-  });
+  ///
+  const $settingPressCtrl = document.querySelector('input#settingPressCtrl');
 
-  // create new popup window
-  const normalizedSelectionText = normalizeURI(text).toLowerCase().trim();
-  const url = `https://www.ldoceonline.com/dictionary/${normalizedSelectionText}`;
+  $settingPressCtrl.onchange = e => {
+    const { checked } = e.target;
 
-  const longmanWindow = {
-    url,
-    focused: true,
-    type: 'popup',
-    width: Math.round(screen.availWidth * 0.30),
-    height: Math.round(screen.availHeight * 0.85),
-    top: 0,
-    left: Math.round(screen.availWidth * 0.90),
+    chrome.storage.sync.set({
+      [storageKeys.settings.pressingCtrl]: checked,
+    });
   };
 
-  chrome.windows.create(longmanWindow);
-};
+  // select dictionay control
+  const $selectDictionary = document.getElementById('selectDictionary');
 
-const deleteByIndex = index => {
-  if (index < 0) return;
-
-  chrome.storage.sync.get([STORAGE_KEY], result => {
-    const histories = result[STORAGE_KEY] || [];
-
-    histories.splice(index, 1);
+  $selectDictionary.onchange = e => {
+    const { value } = e.target;
 
     chrome.storage.sync.set({
-      [STORAGE_KEY]: histories,
-    }, () => {
-      location.reload();
+      [storageKeys.type]: value,
     });
+  }
+
+  //
+  chrome.storage.sync.get([storageKeys.type, storageKeys.settings.pressingCtrl], result => {
+    const type = result[storageKeys.type] || 'longman';
+    $selectDictionary.value = type;
+
+    let isAllowPressingCtrl = result[storageKeys.settings.pressingCtrl];
+    if (!isAllowPressingCtrl) {
+      isAllowPressingCtrl = false;
+    }
+    $settingPressCtrl.checked = isAllowPressingCtrl;
+
   });
-};
-
-const saveWordToStorage = word => {
-  chrome.storage.sync.get([STORAGE_KEY], result => {
-    const histories = result[STORAGE_KEY] || [];
-
-    while (histories.length >= MAX_WORD) { histories.pop(); }
-
-    histories.unshift(word);
-
-    chrome.storage.sync.set({
-      [STORAGE_KEY]: histories,
-    });
-  });
-};
+}
 
 const handleLookupWord = word => {
   if (!word || typeof word !== 'string' || word.trim() === '') return;
 
   word = word.trim().toLowerCase();
 
-  showWindow(word);
-  saveWordToStorage(word);
+  port.postMessage({ command: messageCommands.openPopup, text: word });
 };
 
+const settupSearchInput = () => {
+  // search button
+  document.getElementById('btnSearch').onclick = () => {
+    const inputText = document.getElementById('inputSearch').value.trim();
+    handleLookupWord(inputText);
+  };
 
-document.getElementById('btn_oxford_search').onclick = () => {
-  const inputText = document.getElementById('txt_oxford_searchfield').value.trim();
-  handleLookupWord(inputText);
-};
+  // search text input
+  const $searchInput = document.getElementById('inputSearch');
 
-// onkey enter
-const $searchInput = document.getElementById('txt_oxford_searchfield');
+  $searchInput.onkeyup = e => {
+    if (e.keyCode !== 13) return;
 
-$searchInput.onkeyup = e => {
-  // e.preventDefault();
-  if (e.keyCode !== 13) return;
+    const inputText = e.target?.value?.trim();
+    handleLookupWord(inputText);
+  };
+}
 
-  const inputText = e.target?.value?.trim();
-  handleLookupWord(inputText);
-};
+settupSelection();
+settupSearchInput();
 
 // retrieve histories and view on UI
-chrome.storage.sync.get([STORAGE_KEY], (result) => {
-  const histories = result[STORAGE_KEY] || [];
-  const $table = document.getElementById('wordTable');
+chrome.storage.sync.get([storageKeys.history], result => {
+  const histories = result[storageKeys.history] || [];
+  const $table = document.getElementById('historyTable');
 
-  histories.forEach((text, index) => {
+  histories.forEach((each, index) => {
     // row
     const $row = $table.insertRow(-1);
     const $cellWord = $row.insertCell(0);
     const $cellAction = $row.insertCell(1);
 
+    //
+    const { text, _id } = each;
+
     // cell word
     let nodeWord = htmlToElement(`<span>${text}</span>`);
 
-    nodeWord.onclick = () => {
-      showWindow(text);
+    $cellWord.onclick = () => {
+      port.postMessage({ command: messageCommands.openPopup, text });
     };
 
     $cellWord.appendChild(nodeWord);
 
     // action world
-    let nodeAction = htmlToElement(`<span>Delete</span>`);
+    let nodeDelete = htmlToElement(`<span class='btnDelete' title='Delete '${text}''> </span>`);
 
-    nodeAction.onclick = () => {
-      console.log(index);
-      deleteByIndex(index);
+    nodeDelete.onclick = () => {
+      port.postMessage({ command: messageCommands.deleteItem, _id });
+      $row.remove();
     };
 
-    $cellAction.appendChild(nodeAction);
+    $cellAction.appendChild(nodeDelete);
+
+    let nodeCopy = htmlToElement(`<span class='btnCopy' title='Copy to clipboard'></span>`);
+
+    nodeCopy.onclick = () => {
+      copyToClipboard(text);
+    };
+
+    $cellAction.appendChild(nodeCopy);
   });
 });
 
-const htmlToElement = html => {
-  const wrapper = document.createElement('div');
-  wrapper.innerHTML = html;
-  return wrapper.firstChild;
-};
+const tabButtons = document.querySelectorAll('div.infomation > a');
+
+tabButtons.forEach(each => {
+  each.onclick = e => {
+    const tabContents = document.querySelectorAll('.tabcontent');
+    tabContents.forEach(each => each.style.display = 'none');
+    const tabId = each.getAttribute('tabid');
+    document.getElementById(tabId).style.display = 'block';
+  }
+});
 
