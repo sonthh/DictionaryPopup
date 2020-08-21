@@ -1,7 +1,7 @@
 {
   "name": "Dictionary Popup",
   "author": "tranhuuhongson@gmail.com",
-  "description": "Look up text in pop-up window by mouse and pressing events",
+  "description": "Look up vocabularies on a pop-up window by mouse and pressing events with multiple types of online dictionary",
   "version": "1.0.0",
   "manifest_version": 2,
   "icons": {

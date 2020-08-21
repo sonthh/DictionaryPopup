@@ -5,13 +5,15 @@ const MAX_HISTORY_WORD = 15;
 const PORT_MESSAGING = 'PORT_MESSAGING';
 
 const CTRL_KEY = 17;
-const LONG_PRESS_CTRL = 500; // miliseconds
+const SHIFT_KEY = 16;
+const LONG_PRESS = 500; // miliseconds
 
 const SCROLLED_LENGTH = 250; // pixels
 
 const messageCommands = {
   openPopup: 'OPEN_POPUP',
   deleteItem: 'DELETE_ITEM',
+  focusPopup: 'FOCUS_POPUP',
 };
 
 const storageKeys = {

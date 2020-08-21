@@ -127,7 +127,8 @@ select#selectDictionary>option {
 }
 
 .infomation {
-  text-align: right;
+  text-align: center;
+  padding: 2px 0;
 }
 
 .infomation>a {
@@ -135,9 +136,9 @@ select#selectDictionary>option {
   background-repeat: no-repeat;
   background-position: center center;
   display: inline-block;
-  width: 14px;
-  height: 14px;
-  cursor: default;
+  width: 22px;
+  height: 22px;
+  cursor: pointer;
 }
 
 .infomation>a.about {

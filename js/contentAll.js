@@ -10,19 +10,27 @@ document.onselectionchange = () => {
 let pressTimer = null;
 
 document.onkeydown = (e) => {
-  // e.preventDefault(); // don't play this code => it will block shortcut key like: Ctrl + C,Ctrl + V,....
+  // e.preventDefault(); // don't play this code => it will block shortcut key
 
-  if (e.keyCode !== CTRL_KEY || seletectedText.trim() === '') return;
+  if (e.keyCode === SHIFT_KEY) {
+    pressTimer = window.setTimeout(() => focusWindow(), LONG_PRESS);
+    return;
+  }
 
-  chrome.storage.sync.get([storageKeys.settings.pressingCtrl], result => {
-    const isAllowPressingCtrl = result[storageKeys.settings.pressingCtrl];
-    if (!isAllowPressingCtrl) {
-      return;
-    }
-    pressTimer = window.setTimeout(() => openNewWindow(seletectedText), LONG_PRESS_CTRL);
-  });
+  if (e.keyCode === CTRL_KEY && seletectedText && seletectedText.trim() !== '') {
+    chrome.storage.sync.get([storageKeys.settings.pressingCtrl], result => {
 
+      const isAllowPressingCtrl = result[storageKeys.settings.pressingCtrl];
 
+      if (!isAllowPressingCtrl) {
+        return;
+      }
+
+      pressTimer = window.setTimeout(() => openNewWindow(seletectedText), LONG_PRESS);
+    });
+
+    return;
+  }
 };
 
 document.onkeyup = (e) => {
@@ -36,6 +44,11 @@ const port = chrome.runtime.connect({ name: PORT_MESSAGING });
 const openNewWindow = seletectedText => {
   port.postMessage({ command: messageCommands.openPopup, text: seletectedText });
 }
+
+const focusWindow = () => {
+  port.postMessage({ command: messageCommands.focusPopup });
+}
+
 
 // port.onMessage.addListener(msg => {
 //   if (msg.response === 'OK') {

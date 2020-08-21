@@ -36,6 +36,7 @@ chrome.runtime.onConnect.addListener(port => {
       saveToStorage(selectionText);
 
       port.postMessage({ response: 'OK' });
+      return;
     }
 
     if (msg.command === messageCommands.deleteItem) {
@@ -46,9 +47,27 @@ chrome.runtime.onConnect.addListener(port => {
       deleteById(_id);
 
       port.postMessage({ response: 'OK' });
+      return;
+    }
+
+    if (msg.command === messageCommands.focusPopup) {
+      console.log('focus');
+      focusPopup();
+      return;
     }
   });
 });
+
+const focusPopup = () => {
+  chrome.windows.getAll({ windowTypes: ['popup'] }, windows => {
+    if (!windows || !windows.length) {
+      createNewPopup('hello');
+      return;
+    };
+
+    windows.forEach(({ id }) => chrome.windows.update(id, { focused: true }));
+  });
+}
 
 const closeAllPopup = () => {
   chrome.windows.getAll({ windowTypes: ['popup'] }, windows => {
