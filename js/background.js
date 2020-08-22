@@ -22,39 +22,40 @@ chrome.contextMenus.onClicked.addListener(eventData => {
   saveToStorage(selectionText);
 });
 
+const handleMessaging = (port, msg) => {
+  if (msg.command === messageCommands.openPopup) {
+    if (!msg.text) return;
+    const selectionText = msg.text;
+
+    closeAllPopup();
+    createNewPopup(selectionText);
+    saveToStorage(selectionText);
+
+    port.postMessage({ response: 'OK' });
+    return;
+  }
+
+  if (msg.command === messageCommands.deleteItem) {
+    if (!msg._id) return;
+
+    const { _id } = msg;
+
+    deleteById(_id);
+
+    port.postMessage({ response: 'OK' });
+    return;
+  }
+
+  if (msg.command === messageCommands.focusPopup) {
+    focusPopup();
+    return;
+  }
+}
+
 chrome.runtime.onConnect.addListener(port => {
   console.assert(port.name === PORT_MESSAGING);
 
-  port.onMessage.addListener(msg => {
-
-    if (msg.command === messageCommands.openPopup) {
-      if (!msg.text) return;
-      const selectionText = msg.text;
-
-      closeAllPopup();
-      createNewPopup(selectionText);
-      saveToStorage(selectionText);
-
-      port.postMessage({ response: 'OK' });
-      return;
-    }
-
-    if (msg.command === messageCommands.deleteItem) {
-      if (!msg._id) return;
-
-      const { _id } = msg;
-
-      deleteById(_id);
-
-      port.postMessage({ response: 'OK' });
-      return;
-    }
-
-    if (msg.command === messageCommands.focusPopup) {
-      focusPopup();
-      return;
-    }
-  });
+  port.onMessage.addListener(msg => handleMessaging(port, msg));
 });
 
 const focusPopup = () => {

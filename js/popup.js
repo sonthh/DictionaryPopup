@@ -57,6 +57,10 @@ const settupSearchInput = () => {
   // search text input
   const $searchInput = document.getElementById('inputSearch');
 
+  $searchInput.onfocus = () => {
+    $searchInput.select();
+  }
+
   $searchInput.onkeyup = e => {
     if (e.keyCode !== 13) return;
 
