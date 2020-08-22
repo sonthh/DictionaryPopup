@@ -51,7 +51,6 @@ chrome.runtime.onConnect.addListener(port => {
     }
 
     if (msg.command === messageCommands.focusPopup) {
-      console.log('focus');
       focusPopup();
       return;
     }
@@ -142,3 +141,23 @@ const deleteById = _id => {
     });
   });
 }
+
+
+const notificationId = 'installed';
+
+chrome.notifications.create(notificationId, {
+  iconUrl: chrome.runtime.getURL('../icon_48.png'),
+  title: 'Dictionary Popup',
+  type: 'progress',
+  progress: 100,
+  message: 'You have successfully installed the extension',
+  // buttons: [{ title: 'Contact' }],
+  isClickable: false,
+  priority: 2,
+}, () => { });
+
+// chrome.notifications.onClicked.addListener(id => {
+//   if (notificationId !== id) return;
+
+//   chrome.tabs.create({ url: "https://www.facebook.com/sonthh" });
+// });

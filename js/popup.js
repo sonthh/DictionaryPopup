@@ -31,8 +31,8 @@ const settupSelection = () => {
     $selectDictionary.value = type;
 
     let isAllowPressingCtrl = result[storageKeys.settings.pressingCtrl];
-    if (!isAllowPressingCtrl) {
-      isAllowPressingCtrl = false;
+    if (isAllowPressingCtrl === undefined) {
+      isAllowPressingCtrl = true;
     }
     $settingPressCtrl.checked = isAllowPressingCtrl;
 
@@ -92,7 +92,7 @@ chrome.storage.sync.get([storageKeys.history], result => {
     $cellWord.appendChild(nodeWord);
 
     // action world
-    let nodeDelete = htmlToElement(`<span class='btnDelete' title='Delete '${text}''> </span>`);
+    let nodeDelete = htmlToElement(`<span class='btnDelete' title='Delete "${text}"'> </span>`);
 
     nodeDelete.onclick = () => {
       port.postMessage({ command: messageCommands.deleteItem, _id });

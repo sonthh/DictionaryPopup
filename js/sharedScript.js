@@ -42,11 +42,14 @@ const uniqueId = () => {
 }
 
 const copyToClipboard = text => {
-  var dummy = document.createElement('textarea');
-  document.body.appendChild(dummy);
-  dummy.value = text;
-  dummy.select();
+  const temp = document.createElement('textarea');
+  document.body.appendChild(temp);
+  
+  temp.value = text;
+  temp.select();
+  
   document.execCommand('copy');
-  document.body.removeChild(dummy);
+  
+  document.body.removeChild(temp);
 }
 

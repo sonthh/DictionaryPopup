@@ -20,7 +20,11 @@ document.onkeydown = (e) => {
   if (e.keyCode === CTRL_KEY && seletectedText && seletectedText.trim() !== '') {
     chrome.storage.sync.get([storageKeys.settings.pressingCtrl], result => {
 
-      const isAllowPressingCtrl = result[storageKeys.settings.pressingCtrl];
+      let isAllowPressingCtrl = result[storageKeys.settings.pressingCtrl];
+
+      if (isAllowPressingCtrl === undefined) {
+        isAllowPressingCtrl = true;
+      }
 
       if (!isAllowPressingCtrl) {
         return;
@@ -33,7 +37,7 @@ document.onkeydown = (e) => {
   }
 };
 
-document.onkeyup = (e) => {
+document.onkeyup = e => {
   if (!pressTimer) return;
 
   clearTimeout(pressTimer);
