@@ -11,22 +11,22 @@ let pressTimer = null;
 
 document.onkeydown = (e) => {
   // e.preventDefault(); // don't play this code => it will block shortcut key
-
+  console.log(e.keyCode);
   if (e.keyCode === SHIFT_KEY) {
     pressTimer = window.setTimeout(() => focusWindow(), LONG_PRESS);
     return;
   }
 
-  if (e.keyCode === CTRL_KEY && seletectedText && seletectedText.trim() !== '') {
-    chrome.storage.sync.get([storageKeys.settings.pressingCtrl], result => {
+  if (e.keyCode === ALT_KEY && seletectedText && seletectedText.trim() !== '') {
+    chrome.storage.sync.get([storageKeys.settings.pressingAlt], result => {
 
-      let isAllowPressingCtrl = result[storageKeys.settings.pressingCtrl];
+      let isAllowpressingAlt = result[storageKeys.settings.pressingAlt];
 
-      if (isAllowPressingCtrl === undefined) {
-        isAllowPressingCtrl = true;
+      if (isAllowpressingAlt === undefined) {
+        isAllowpressingAlt = true;
       }
 
-      if (!isAllowPressingCtrl) {
+      if (!isAllowpressingAlt) {
         return;
       }
 

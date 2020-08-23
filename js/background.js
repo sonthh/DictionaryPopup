@@ -85,7 +85,8 @@ const normalizeURI = text => {
 }
 
 const createNewPopup = text => {
-  const normalizedText = normalizeURI(text).toLowerCase().trim();
+  // const normalizedText = normalizeURI(text).toLowerCase().trim();
+  const normalizedText = text;
 
   chrome.storage.sync.get([storageKeys.type], result => {
     const type = result[storageKeys.type] || 'longman';

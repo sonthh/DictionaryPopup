@@ -1,23 +1,23 @@
 
-const contextMenuId = 'ContextMenuId';
-const MAX_HISTORY_WORD = 15;
 
-const PORT_MESSAGING = 'PORT_MESSAGING';
+export const contextMenuId = 'ContextMenuId';
+export const MAX_HISTORY_WORD = 15;
 
-const CTRL_KEY = 17;
-const SHIFT_KEY = 16;
-const ALT_KEY = 18;
-const LONG_PRESS = 500; // miliseconds
+export const PORT_MESSAGING = 'PORT_MESSAGING';
 
-const SCROLLED_LENGTH = 250; // pixels
+export const CTRL_KEY = 17;
+export const SHIFT_KEY = 16;
+export const LONG_PRESS = 500; // miliseconds
 
-const messageCommands = {
+export const SCROLLED_LENGTH = 250; // pixels
+
+export const messageCommands = {
   openPopup: 'OPEN_POPUP',
   deleteItem: 'DELETE_ITEM',
   focusPopup: 'FOCUS_POPUP',
 };
 
-const storageKeys = {
+export const storageKeys = {
   history: 'KEY_HISTORY',
   type: 'KEY_DICTIONARY_TYPE',
   settings: {
@@ -25,7 +25,17 @@ const storageKeys = {
   },
 };
 
-const dictionaryUrls = {
+export const dictionaryOptions = {
+  longman: 'Longman',
+  oxford: 'Oxford',
+  cambridge: 'Cambridge',
+  googleImages: 'Google Images',
+  traCauVn: 'Tracau.vn',
+  sohaTraTu: 'Tratu.soha.vn',
+  googleTranslate: 'Google Translate'
+}
+
+export const dictionaryUrls = {
   longman: 'https://www.ldoceonline.com/dictionary/',
   oxford: 'https://www.oxfordlearnersdictionaries.com/definition/american_english/',
   cambridge: 'https://dictionary.cambridge.org/dictionary/english/',
@@ -35,18 +45,17 @@ const dictionaryUrls = {
   googleTranslate: 'https://translate.google.com/#view=home&op=translate&sl=en&tl=vi&text='
 };
 
-
-const htmlToElement = html => {
+export const htmlToElement = html => {
   const wrapper = document.createElement('div');
   wrapper.innerHTML = html;
   return wrapper.firstChild;
 }
 
-const uniqueId = () => {
+export const uniqueId = () => {
   return '_' + Math.random().toString(36).substr(2, 9);
 }
 
-const copyToClipboard = text => {
+export const copyToClipboard = text => {
   const temp = document.createElement('textarea');
   document.body.appendChild(temp);
 

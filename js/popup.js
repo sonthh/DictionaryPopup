@@ -10,7 +10,7 @@ const settupSelection = () => {
     const { checked } = e.target;
 
     chrome.storage.sync.set({
-      [storageKeys.settings.pressingCtrl]: checked,
+      [storageKeys.settings.pressingAlt]: checked,
     });
   };
 
@@ -26,11 +26,11 @@ const settupSelection = () => {
   }
 
   //
-  chrome.storage.sync.get([storageKeys.type, storageKeys.settings.pressingCtrl], result => {
+  chrome.storage.sync.get([storageKeys.type, storageKeys.settings.pressingAlt], result => {
     const type = result[storageKeys.type] || 'longman';
     $selectDictionary.value = type;
 
-    let isAllowPressingCtrl = result[storageKeys.settings.pressingCtrl];
+    let isAllowPressingCtrl = result[storageKeys.settings.pressingAlt];
     if (isAllowPressingCtrl === undefined) {
       isAllowPressingCtrl = true;
     }

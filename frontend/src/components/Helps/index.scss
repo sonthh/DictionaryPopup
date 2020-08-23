@@ -1,0 +1,24 @@
+.helper {
+  background: #fff;
+  margin: 6px;
+  padding: 6px 8px;
+  border-radius: 8px;
+  user-select: inherit;
+}
+
+.helper h4 {
+  font-family: monospace;
+  font-weight: 600;
+  font-size: 11px;
+}
+
+.helper p {
+  font-size: 11px;
+  color: #9e9e9e;
+  padding: 5px 0px;
+  user-select: text;
+}
+
+.helper p::selection {
+  background-color: yellow;
+}

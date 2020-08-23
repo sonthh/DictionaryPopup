@@ -1,0 +1,74 @@
+#tableWrapper {
+  display: block;
+  overflow: hidden;
+}
+
+#historyTable {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+#historyTable td,
+#historyTable th {
+  border: 1px solid #ddd;
+  padding: 4px;
+  font-size: 12px;
+}
+
+#historyTable td {
+  width: 60% !important;
+}
+
+#historyTable tr:nth-child(even) {
+  background-color: #f2f2f2;
+}
+
+#historyTable tr:hover {
+  background-color: #ddd;
+}
+
+#historyTable tr:hover td:nth-child(1) span {
+  color: #3569d6;
+}
+
+#historyTable th {
+  text-align: left;
+  background-color: #00bcd4;
+  color: white;
+  font-weight: normal;
+  font-family: monospace;
+  font-size: 13px;
+  font-style: italic;
+  padding-left: 8px;
+}
+
+#historyTable td span {
+  cursor: pointer;
+}
+
+#historyTable td:nth-child(2) span {
+  background-image: url(../../images/delete_icon.png);
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center center;
+  display: inline-block;
+  width: 17px;
+  height: 15px;
+  margin-right: 5px;
+}
+
+#historyTable td:nth-child(2) span.btnCopy {
+  background-image: url(../../images/copy_icon.png);
+}
+
+#historyTable td:nth-child(1) {
+  cursor: pointer;
+}
+
+#historyTable td:nth-child(1) span {
+  text-overflow: ellipsis;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}

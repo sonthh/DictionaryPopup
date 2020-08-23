@@ -1,0 +1,27 @@
+.tab-list {
+  display: flex;
+  justify-content: center;
+}
+
+.tab-list-item {
+  padding: 2px;
+  display: block;
+  list-style: none;
+}
+
+.tab-list-active {
+  background-color: white;
+  border-radius: 50%;
+}
+
+.tab-list-item > span.about {
+  background-image: url(../../images/about_icon.png);
+}
+
+.tab-list-item > span.settings {
+  background-image: url(../../images/settings_icon.png);
+}
+
+.tab-list-item > span.home {
+  background-image: url(../../images/home_icon.png);
+}
