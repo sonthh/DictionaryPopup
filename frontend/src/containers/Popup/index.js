@@ -60,6 +60,10 @@ export class Popup extends Component {
   }
 
   onTabClick = key => {
+    if (key === 'game') {
+      window.open('index.html', '_blank');
+      return;
+    }
     this.setState({ activeKey: key });
   }
 
@@ -101,6 +105,8 @@ export class Popup extends Component {
             </Tab>
             <Tab label='Settings' key="settings">
               <Settings />
+            </Tab>
+            <Tab label='Game' key="game">
             </Tab>
             <Tab label='Help' key="about">
               <Helps />

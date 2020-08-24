@@ -11,7 +11,7 @@ export class Helps extends Component {
           <p>Right click on the selected text and choose Look up "selected text".</p>
         </div>
         <div className="helper">
-          <h4>Long press Ctrl</h4>
+          <h4>Long press Alt</h4>
           <p>Open popup for the result with selected text.</p>
         </div>
         <div className="helper">

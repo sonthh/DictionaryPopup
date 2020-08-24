@@ -23,7 +23,10 @@ export class Tabs extends Component {
                   className={className}
                   key={child.key}
                 >
-                  <span title={child.props.label} className={child.key} />
+                  <span
+                    title={child.props.label}
+                    className={child.key}
+                  />
                 </li>
               );
             })
