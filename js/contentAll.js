@@ -11,7 +11,7 @@ let pressTimer = null;
 
 document.onkeydown = (e) => {
   // e.preventDefault(); // don't play this code => it will block shortcut key
-  console.log(e.keyCode);
+
   if (e.keyCode === SHIFT_KEY) {
     pressTimer = window.setTimeout(() => focusWindow(), LONG_PRESS);
     return;

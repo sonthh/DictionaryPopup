@@ -2,8 +2,6 @@
 const doubleClick = () => {
   const selectionText = window.getSelection().toString();
 
-  console.log(selectionText);
-
   if (!selectionText || selectionText.trim() === '') {
     return;
   }
