@@ -17,7 +17,7 @@ export class Histories extends Component {
     try {
       const storage = await getStorage([storageKeys.history]);
 
-      const histories = storage[storageKeys.history];
+      const histories = storage[storageKeys.history] || [];
 
       this.setState({ histories });
     } catch (err) { }

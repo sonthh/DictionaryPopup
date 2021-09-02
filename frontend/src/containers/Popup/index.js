@@ -106,8 +106,8 @@ export class Popup extends Component {
             <Tab label='Settings' key="settings">
               <Settings />
             </Tab>
-            <Tab label='Game' key="game">
-            </Tab>
+            {/* <Tab label='Game' key="game">
+            </Tab> */}
             <Tab label='Help' key="about">
               <Helps />
             </Tab>

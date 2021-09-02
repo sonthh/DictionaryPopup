@@ -18,7 +18,7 @@ export class Settings extends Component {
       const storage = await getStorage([storageKeys.settings.pressingAlt]);
       const tmp = storage[storageKeys.settings.pressingAlt];
 
-      const checkedLongPressAlt = tmp === undefined ? false : tmp;
+      const checkedLongPressAlt = tmp === undefined ? true : tmp;
 
       this.setState({ checkedLongPressAlt });
     } catch (err) { }
